@@ -2,6 +2,12 @@
 	Loads our library and all of its dependencies, then runs tests using TestEZ.
 ]]
 
+
+local lrdb = require("lrdb_server")
+
+print("Waiting for debugger to attach...")
+lrdb.activate(21110)
+
 -- If you add any dependencies, add them to this table so they'll be loaded!
 local LOAD_MODULES = {
 	{"src", "Roact"},

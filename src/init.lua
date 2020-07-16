@@ -6,6 +6,7 @@ local GlobalConfig = require(script.GlobalConfig)
 local createReconciler = require(script.createReconciler)
 local createReconcilerCompat = require(script.createReconcilerCompat)
 local RobloxRenderer = require(script.RobloxRenderer)
+local hooks = require(script.hooks)
 local strict = require(script.strict)
 local Binding = require(script.Binding)
 
@@ -39,6 +40,14 @@ local Roact = strict {
 	reconcile = reconcilerCompat.reconcile,
 
 	setGlobalConfig = GlobalConfig.set,
+
+	Hooks = {
+		useState = hooks.useState,
+		useCallback = hooks.useCallback,
+		useMemo = hooks.useMemo,
+		useEffect = hooks.useEffect,
+		useRef = hooks.useRef,
+	},
 
 	-- APIs that may change in the future without warning
 	UNSTABLE = {

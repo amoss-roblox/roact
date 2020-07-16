@@ -26,6 +26,7 @@ local function createSpy(inner)
 	end
 
 	self.assertCalledWith = function(_, ...)
+		assert(_ == self)
 		local len = select("#", ...)
 
 		if self.valuesLength ~= len then
@@ -43,6 +44,7 @@ local function createSpy(inner)
 	end
 
 	self.assertCalledWithDeepEqual = function(_, ...)
+		assert(_ == self)
 		local len = select("#", ...)
 
 		if self.valuesLength ~= len then
@@ -60,6 +62,7 @@ local function createSpy(inner)
 	end
 
 	self.captureValues = function(_, ...)
+		assert(_ == self)
 		local len = select("#", ...)
 		local result = {}
 

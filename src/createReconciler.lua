@@ -4,6 +4,9 @@ local ElementUtils = require(script.Parent.ElementUtils)
 local Children = require(script.Parent.PropMarkers.Children)
 local Symbol = require(script.Parent.Symbol)
 local internalAssert = require(script.Parent.internalAssert)
+local hooks = require(script.Parent.hooks)
+local setupHooks = hooks.setupHooks
+local teardownHooks = hooks.teardownHooks
 
 local config = require(script.Parent.GlobalConfig).get()
 
@@ -213,6 +216,7 @@ local function createReconciler(renderer)
 		end
 
 		-- If nothing changed, we can skip this update
+		-- TODO: Not if using hooks though?
 		if virtualNode.currentElement == newElement and newState == nil then
 			return virtualNode
 		end
@@ -233,7 +237,10 @@ local function createReconciler(renderer)
 		if kind == ElementKind.Host then
 			virtualNode = renderer.updateHostNode(reconciler, virtualNode, newElement)
 		elseif kind == ElementKind.Function then
+			local id = virtualNode
+			setupHooks(id)
 			virtualNode = updateFunctionVirtualNode(virtualNode, newElement)
+			teardownHooks(id)
 		elseif kind == ElementKind.Stateful then
 			shouldContinueUpdate = virtualNode.instance:__update(newElement, newState)
 		elseif kind == ElementKind.Portal then
@@ -275,6 +282,7 @@ local function createReconciler(renderer)
 			)
 		end
 
+		-- TODO: Storing hooks state
 		return {
 			[Type] = Type.VirtualNode,
 			currentElement = element,
@@ -358,7 +366,10 @@ local function createReconciler(renderer)
 		if kind == ElementKind.Host then
 			renderer.mountHostNode(reconciler, virtualNode)
 		elseif kind == ElementKind.Function then
+			local id = virtualNode
+			setupHooks(id)
 			mountFunctionVirtualNode(virtualNode)
+			teardownHooks(id)
 		elseif kind == ElementKind.Stateful then
 			element.component:__mount(reconciler, virtualNode)
 		elseif kind == ElementKind.Portal then

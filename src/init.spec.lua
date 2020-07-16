@@ -20,6 +20,7 @@ return function()
 			teardown = "function",
 			reconcile = "function",
 
+			Hooks = true,
 			Component = true,
 			PureComponent = true,
 			Portal = true,
